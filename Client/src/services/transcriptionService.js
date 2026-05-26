@@ -4,23 +4,24 @@ export async function uploadAudioForTranscription(audioFile) {
   const formData = new FormData()
   formData.append('audio', audioFile)
 
-  const response = await fetch(`${API_BASE_URL}/transcriptions`, {
+  const response = await fetch(`${API_BASE_URL}/uploads/audio`, {
     method: 'POST',
     body: formData,
   })
 
   if (!response.ok) {
-    throw new Error('Unable to upload audio file.')
+    const errorData = await response.json().catch(() => null)
+    throw new Error(errorData?.message || 'Unable to upload audio file.')
   }
 
   return response.json()
 }
 
-export async function getTranscriptionHistory() {
-  const response = await fetch(`${API_BASE_URL}/transcriptions`)
+export async function checkApiHealth() {
+  const response = await fetch(`${API_BASE_URL}/health`)
 
   if (!response.ok) {
-    throw new Error('Unable to load transcription history.')
+    throw new Error('Backend is not responding.')
   }
 
   return response.json()

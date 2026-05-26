@@ -1,38 +1,45 @@
-# Speech-to-Text Web Application
+# SpeechFlow
 
-Internship assignment project for Labmentix.
+SpeechFlow is a MERN-ready speech-to-text web application. The current MVP lets users upload audio files through a React interface and stores valid files on the Express server for upcoming transcription processing.
 
 ## Tech Stack
 
-- Frontend: React.js with Vite
-- Styling: Tailwind CSS
-- Backend: Node.js and Express.js
-- Database: MongoDB with Mongoose
-- File Upload: Multer
-- Speech-to-Text API: Deepgram
+- Client: React.js, Vite, Tailwind CSS
+- Server: Node.js, Express.js, Multer
+- Planned: MongoDB, Mongoose, speech-to-text API integration
 
-## Day 1 Status
+## Current Features
 
-Day 1 creates the frontend foundation only. The app currently has:
+- Clean product-style upload workspace
+- Audio file validation for mp3, wav, and m4a
+- Temporary server-side audio storage
+- Health-check API for frontend/backend status
+- Reusable backend routes, controllers, middleware, and utilities
+- Session upload history in the client UI
 
-- React app created with Vite
-- Tailwind CSS configured
-- Professional folder structure
-- Basic upload, result, and history UI placeholders
-- Frontend service layer prepared for backend API calls
+## Run The App
 
-## Run Frontend
+Start the server:
 
 ```bash
-cd frontend
+cd Server
 npm install
 npm run dev
 ```
 
-## Day 2 Plan
+Start the client:
 
-- Create Express backend
-- Add MongoDB connection with Mongoose
-- Add transcription model
-- Add upload route with Multer
-- Connect frontend upload form to backend
+```bash
+cd Client
+npm install
+npm run dev
+```
+
+## API Endpoints
+
+```text
+GET  /api/health
+POST /api/uploads/audio
+```
+
+The upload endpoint expects `multipart/form-data` with the file field named `audio`.

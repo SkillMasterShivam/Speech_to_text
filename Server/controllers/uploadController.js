@@ -14,7 +14,8 @@ export const handleAudioUpload = (req, res) => {
       fileName: req.file.filename,
       mimeType: req.file.mimetype,
       size: req.file.size,
-      path: req.file.path,
+      folder: "uploads/audio",
+      uploadedAt: new Date().toISOString(),
     },
   });
 };

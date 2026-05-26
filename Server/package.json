@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Express backend for the Labmentix Speech-to-Text web application.",
+  "description": "Express backend for the SpeechFlow audio transcription workspace.",
   "main": "server.js",
   "type": "module",
   "scripts": {
