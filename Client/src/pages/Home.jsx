@@ -2,7 +2,20 @@ import { useEffect, useState } from 'react'
 import FileUploadCard from '../components/FileUploadCard'
 import HistoryList from '../components/HistoryList'
 import TranscriptionResult from '../components/TranscriptionResult'
-import { checkApiHealth, uploadAudioForTranscription } from '../services/transcriptionService'
+import {
+  checkApiHealth,
+  getTranscriptionHistory,
+  uploadAudioForTranscription,
+} from '../services/transcriptionService'
+
+function mapTranscriptionToHistoryItem(transcription) {
+  return {
+    id: transcription._id || transcription.id,
+    fileName: transcription.originalFileName,
+    createdAt: new Date(transcription.createdAt).toLocaleString(),
+    preview: transcription.transcriptionText,
+  }
+}
 
 function Home() {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -14,7 +27,11 @@ function Home() {
 
   useEffect(() => {
     checkApiHealth()
-      .then(() => setApiOnline(true))
+      .then(async () => {
+        setApiOnline(true)
+        const historyResponse = await getTranscriptionHistory()
+        setHistory(historyResponse.data.map(mapTranscriptionToHistoryItem))
+      })
       .catch(() => setApiOnline(false))
   }, [])
 
@@ -35,14 +52,7 @@ function Home() {
       setStatus('uploading')
       setError('')
       const response = await uploadAudioForTranscription(selectedFile)
-      const uploadedItem = {
-        id: response.data.fileName,
-        fileName: response.data.originalName,
-        status: 'Uploaded',
-        createdAt: new Date().toLocaleString(),
-        preview: 'Saved successfully. Transcription will be generated when the speech API is connected.',
-        size: response.data.size,
-      }
+      const uploadedItem = mapTranscriptionToHistoryItem(response.data)
 
       setUploadResult(response.data)
       setHistory((currentHistory) => [uploadedItem, ...currentHistory])

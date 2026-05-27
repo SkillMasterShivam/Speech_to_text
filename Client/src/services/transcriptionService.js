@@ -17,6 +17,17 @@ export async function uploadAudioForTranscription(audioFile) {
   return response.json()
 }
 
+export async function getTranscriptionHistory() {
+  const response = await fetch(`${API_BASE_URL}/uploads/history`)
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null)
+    throw new Error(errorData?.message || 'Unable to load transcription history.')
+  }
+
+  return response.json()
+}
+
 export async function checkApiHealth() {
   const response = await fetch(`${API_BASE_URL}/health`)
 

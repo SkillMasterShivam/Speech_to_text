@@ -19,7 +19,7 @@ function HistoryList({ items }) {
               </div>
               <p className="mt-2 text-sm text-slate-600">{item.preview}</p>
               <span className="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                {item.status}
+                Transcribed
               </span>
             </article>
           ))}
