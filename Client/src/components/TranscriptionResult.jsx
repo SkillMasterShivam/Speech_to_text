@@ -17,15 +17,17 @@ function TranscriptionResult({ result, status }) {
             <dl className="grid gap-3 text-slate-700 sm:grid-cols-2">
               <div>
                 <dt className="text-xs font-semibold uppercase text-slate-500">File</dt>
-                <dd className="break-all">{result.originalName}</dd>
+                <dd className="break-all">{result.originalFileName}</dd>
               </div>
               <div>
                 <dt className="text-xs font-semibold uppercase text-slate-500">Size</dt>
                 <dd>{formatBytes(result.size)}</dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="text-xs font-semibold uppercase text-slate-500">Next step</dt>
-                <dd>Connect the speech API to generate the transcript from this uploaded audio.</dd>
+                <dt className="text-xs font-semibold uppercase text-slate-500">Transcript</dt>
+                <dd className="mt-1 whitespace-pre-wrap rounded-md border border-slate-200 bg-white p-3 text-slate-900">
+                  {result.transcriptionText}
+                </dd>
               </div>
             </dl>
           </div>
