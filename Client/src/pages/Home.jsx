@@ -1,13 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FileUpload from '../components/FileUpload';
 import AudioRecorder from '../components/AudioRecorder';
 import TranscriptionDisplay from '../components/TranscriptionDisplay';
-import { transcribeAudio } from '../services/api';
+import HistoryList from '../components/HistoryList';
+import { transcribeAudio, getTranscriptionHistory } from '../services/api';
 
 const Home = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcription, setTranscription] = useState(null);
   const [error, setError] = useState(null);
+  
+  // Day 7: History state
+  const [history, setHistory] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
+  // Fetch history on component mount
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const fetchHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const response = await getTranscriptionHistory();
+      // Map backend response to match HistoryList expected props
+      const formattedHistory = response.data.map(item => ({
+        id: item._id || item.id,
+        fileName: item.originalFileName || item.fileName,
+        createdAt: new Date(item.createdAt).toLocaleString(),
+        preview: item.transcriptionText,
+        status: 'Completed'
+      }));
+      setHistory(formattedHistory);
+    } catch (err) {
+      console.error("Failed to load history:", err);
+      // We don't want to show a global error if just history fails, but we can log it.
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const handleAudioProcess = async (audioData, fileName) => {
     setIsProcessing(true);
@@ -16,13 +47,11 @@ const Home = () => {
 
     try {
       const response = await transcribeAudio(audioData, fileName);
-      // Mapping logic gracefully checks multiple common response signatures
-      setTranscription(
-        response.transcriptionText || 
-        response.data?.transcriptionText || 
-        response.text || 
-        "Transcription completed successfully (Wait for the backend mapping)."
-      );
+      const text = response.data?.transcriptionText || response.transcriptionText || response.text || "Transcription completed successfully.";
+      setTranscription(text);
+      
+      // Day 7: Refresh history after successful upload
+      await fetchHistory();
     } catch (err) {
       console.error("Transcription error:", err);
       setError(err.message || "An error occurred during transcription.");
@@ -45,7 +74,7 @@ const Home = () => {
             <h1 className="text-xl font-bold text-slate-800">Speech2Text App</h1>
           </div>
           <div className="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-            Day 6: Backend Integration
+            Day 7: Database & History
           </div>
         </div>
       </header>
@@ -68,7 +97,7 @@ const Home = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
           {/* Left Column: Inputs */}
           <div className="lg:col-span-5 space-y-6">
             <FileUpload onProcess={handleAudioProcess} isProcessing={isProcessing} />
@@ -89,6 +118,17 @@ const Home = () => {
           <div className="lg:col-span-7">
             <TranscriptionDisplay transcription={transcription} isProcessing={isProcessing} />
           </div>
+        </div>
+
+        {/* Day 7: History Section */}
+        <div className="animate-slideUp-delay-2">
+          {isLoadingHistory ? (
+            <div className="flex justify-center p-8">
+              <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <HistoryList items={history} />
+          )}
         </div>
       </main>
     </div>
