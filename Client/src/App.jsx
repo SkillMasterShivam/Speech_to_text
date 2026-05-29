@@ -1,12 +1,12 @@
-import AppLayout from './layouts/AppLayout'
-import Home from './pages/Home'
+import React from 'react';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <AppLayout>
+    <div className="font-sans antialiased">
       <Home />
-    </AppLayout>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

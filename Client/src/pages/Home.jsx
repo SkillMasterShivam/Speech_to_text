@@ -1,125 +1,62 @@
-import { useEffect, useState } from 'react'
-import FileUploadCard from '../components/FileUploadCard'
-import HistoryList from '../components/HistoryList'
-import TranscriptionResult from '../components/TranscriptionResult'
-import {
-  checkApiHealth,
-  getTranscriptionHistory,
-  uploadAudioForTranscription,
-} from '../services/transcriptionService'
+import React from 'react';
+import FileUpload from '../components/FileUpload';
+import AudioRecorder from '../components/AudioRecorder';
+import TranscriptionDisplay from '../components/TranscriptionDisplay';
 
-function mapTranscriptionToHistoryItem(transcription) {
-  return {
-    id: transcription._id || transcription.id,
-    fileName: transcription.originalFileName,
-    createdAt: new Date(transcription.createdAt).toLocaleString(),
-    preview: transcription.transcriptionText,
-  }
-}
-
-function Home() {
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [uploadResult, setUploadResult] = useState(null)
-  const [history, setHistory] = useState([])
-  const [status, setStatus] = useState('idle')
-  const [error, setError] = useState('')
-  const [apiOnline, setApiOnline] = useState(false)
-
-  useEffect(() => {
-    checkApiHealth()
-      .then(async () => {
-        setApiOnline(true)
-        const historyResponse = await getTranscriptionHistory()
-        setHistory(historyResponse.data.map(mapTranscriptionToHistoryItem))
-      })
-      .catch(() => setApiOnline(false))
-  }, [])
-
-  const handleFileChange = (file) => {
-    setSelectedFile(file)
-    setUploadResult(null)
-    setError('')
-    setStatus(file ? 'ready' : 'idle')
-  }
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      setError('Please choose an audio file first.')
-      return
-    }
-
-    try {
-      setStatus('uploading')
-      setError('')
-      const response = await uploadAudioForTranscription(selectedFile)
-      const uploadedItem = mapTranscriptionToHistoryItem(response.data)
-
-      setUploadResult(response.data)
-      setHistory((currentHistory) => [uploadedItem, ...currentHistory])
-      setStatus('uploaded')
-    } catch (uploadError) {
-      setStatus('error')
-      setError(uploadError.message)
-    }
-  }
-
+const Home = () => {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Hero Section */}
-      <section className="animate-fadeIn mb-10">
-        <div className="mb-5 flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-gradient-to-r from-indigo-50 to-violet-50 px-4 py-1.5 text-sm font-semibold text-indigo-700 ring-1 ring-indigo-100">
-            Speech to text
-          </span>
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ring-1 ${
-              apiOnline
-                ? 'bg-emerald-50 text-emerald-700 ring-emerald-100'
-                : 'bg-amber-50 text-amber-700 ring-amber-100'
-            }`}
-          >
-            <span
-              className={`h-2 w-2 rounded-full ${
-                apiOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-              }`}
-            />
-            {apiOnline ? 'Backend connected' : 'Start backend server'}
-          </span>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      {/* Header */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-bold text-slate-800">Speech2Text App</h1>
+          </div>
+          <div className="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+            Day 5: Frontend UI
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-slate-900">Transcribe Audio</h2>
+          <p className="mt-2 text-slate-600 max-w-2xl">
+            Upload an audio file or record directly from your microphone to get an accurate text transcription.
+          </p>
         </div>
 
-        <h2 className="max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-          <span className="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 bg-clip-text text-transparent">
-            Upload audio and prepare it for
-          </span>{' '}
-          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            fast, accurate transcription.
-          </span>
-        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left Column: Inputs */}
+          <div className="lg:col-span-5 space-y-6">
+            <FileUpload />
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-slate-200"></div>
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-slate-50 px-3 text-sm text-slate-400 font-medium uppercase tracking-wider">or</span>
+              </div>
+            </div>
 
-        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
-          A clean workspace for uploading audio files, validating formats, and
-          saving them securely before transcription.
-        </p>
-      </section>
+            <AudioRecorder />
+          </div>
 
-      {/* Upload + Result Grid */}
-      <div className="animate-slideUp-delay-1 grid gap-6 lg:grid-cols-2">
-        <FileUploadCard
-          error={error}
-          onFileChange={handleFileChange}
-          onUpload={handleUpload}
-          selectedFile={selectedFile}
-          status={status}
-        />
-        <TranscriptionResult result={uploadResult} status={status} />
-      </div>
+          {/* Right Column: Output */}
+          <div className="lg:col-span-7">
+            <TranscriptionDisplay />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
 
-      {/* History Section */}
-      <div className="animate-slideUp-delay-2 mt-8">
-        <HistoryList items={history} />
-      </div>
-    </main>
-  )
-}
-
-export default Home
+export default Home;
