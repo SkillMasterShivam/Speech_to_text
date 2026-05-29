@@ -64,29 +64,46 @@ function Home() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <section className="mb-8">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Hero Section */}
+      <section className="animate-fadeIn mb-10">
+        <div className="mb-5 flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-gradient-to-r from-indigo-50 to-violet-50 px-4 py-1.5 text-sm font-semibold text-indigo-700 ring-1 ring-indigo-100">
             Speech to text
           </span>
           <span
-            className={`rounded-full px-3 py-1 text-sm font-medium ${
-              apiOnline ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ring-1 ${
+              apiOnline
+                ? 'bg-emerald-50 text-emerald-700 ring-emerald-100'
+                : 'bg-amber-50 text-amber-700 ring-amber-100'
             }`}
           >
+            <span
+              className={`h-2 w-2 rounded-full ${
+                apiOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+              }`}
+            />
             {apiOnline ? 'Backend connected' : 'Start backend server'}
           </span>
         </div>
-        <h2 className="max-w-3xl text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-          Upload audio and prepare it for fast, accurate transcription.
+
+        <h2 className="max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          <span className="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 bg-clip-text text-transparent">
+            Upload audio and prepare it for
+          </span>{' '}
+          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            fast, accurate transcription.
+          </span>
         </h2>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-          A clean workspace for uploading audio files, validating formats, and saving them securely before transcription.
+
+        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
+          A clean workspace for uploading audio files, validating formats, and
+          saving them securely before transcription.
         </p>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+      {/* Upload + Result Grid */}
+      <div className="animate-slideUp-delay-1 grid gap-6 lg:grid-cols-2">
         <FileUploadCard
           error={error}
           onFileChange={handleFileChange}
@@ -97,7 +114,8 @@ function Home() {
         <TranscriptionResult result={uploadResult} status={status} />
       </div>
 
-      <div className="mt-6">
+      {/* History Section */}
+      <div className="animate-slideUp-delay-2 mt-8">
         <HistoryList items={history} />
       </div>
     </main>
