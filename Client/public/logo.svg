@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="barsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer ring -->
+  <circle cx="512" cy="512" r="480" stroke="url(#ringGrad)" stroke-width="80" fill="none"/>
+  <!-- Waveform bars (5 bars of varying heights, centered) -->
+  <rect x="270" y="370" width="80" height="284" rx="40" fill="url(#barsGrad)"/>
+  <rect x="380" y="290" width="80" height="444" rx="40" fill="url(#barsGrad)"/>
+  <rect x="490" y="240" width="80" height="544" rx="40" fill="url(#barsGrad)"/>
+  <rect x="600" y="290" width="80" height="444" rx="40" fill="url(#barsGrad)"/>
+  <rect x="710" y="370" width="80" height="284" rx="40" fill="url(#barsGrad)"/>
+</svg>
