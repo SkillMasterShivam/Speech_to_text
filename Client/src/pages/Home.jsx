@@ -93,9 +93,20 @@ const Home = () => {
   };
 
   const handleAudioProcess = async (audioData, fileName) => {
-    setIsProcessing(true);
     setError(null);
     setTranscription(null);
+
+    if (!audioData) {
+      setError("Please provide an audio file to transcribe.");
+      return;
+    }
+    if (audioData.size === 0) {
+      setError("The provided audio file is empty. Please try a different file.");
+      return;
+    }
+
+    setIsProcessing(true);
+    
     try {
       const res = await transcribeAudio(audioData, fileName);
       setTranscription(
@@ -103,7 +114,7 @@ const Home = () => {
       );
       await fetchHistory();
     } catch (err) {
-      setError(err.message || 'An error occurred during transcription.');
+      setError(err.message || 'An error occurred during transcription. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -164,8 +175,8 @@ const Home = () => {
 
         {/* ── Main Two-Column Input Area ── */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6 animate-slideUp-delay-1">
-          <FileUpload onProcess={handleAudioProcess} isProcessing={isProcessing} />
-          <AudioRecorder onProcess={handleAudioProcess} isProcessing={isProcessing} />
+          <FileUpload onProcess={handleAudioProcess} isProcessing={isProcessing} onError={setError} />
+          <AudioRecorder onProcess={handleAudioProcess} isProcessing={isProcessing} onError={setError} />
         </section>
 
         {/* ── Stats Bar ── */}

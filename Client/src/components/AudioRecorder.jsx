@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const AudioRecorder = ({ onProcess, isProcessing }) => {
+const AudioRecorder = ({ onProcess, isProcessing, onError }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -34,8 +34,9 @@ const AudioRecorder = ({ onProcess, isProcessing }) => {
       setAudioBlob(null);
       setRecordingTime(0);
       timerRef.current = setInterval(() => setRecordingTime(p => p + 1), 1000);
-    } catch {
-      alert('Microphone access is required to record audio.');
+    } catch (err) {
+      if (onError) onError('Microphone access is required or was denied to record audio.');
+      else alert('Microphone access is required to record audio.');
     }
   };
 

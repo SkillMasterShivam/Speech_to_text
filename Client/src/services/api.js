@@ -5,17 +5,21 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000
  */
 export const transcribeAudio = async (audioData, fileName = 'recording.wav') => {
   const formData = new FormData();
-  
   formData.append('audio', audioData, fileName);
 
-  const response = await fetch(`${API_BASE_URL}/uploads/audio`, {
-    method: 'POST',
-    body: formData,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/uploads/audio`, {
+      method: 'POST',
+      body: formData,
+    });
+  } catch (error) {
+    throw new Error("Network error. Please check your internet connection and server status.");
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || 'Failed to transcribe audio.');
+    throw new Error(errorData?.message || `Server error: ${response.statusText || response.status}`);
   }
 
   return response.json();
@@ -25,7 +29,12 @@ export const transcribeAudio = async (audioData, fileName = 'recording.wav') => 
  * Fetches the transcription history from the database.
  */
 export const getTranscriptionHistory = async () => {
-  const response = await fetch(`${API_BASE_URL}/uploads/history`);
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/uploads/history`);
+  } catch (error) {
+    throw new Error("Network error while fetching transcription history.");
+  }
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);

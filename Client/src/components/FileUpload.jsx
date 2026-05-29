@@ -1,12 +1,34 @@
 import React, { useState } from 'react';
 
-const FileUpload = ({ onProcess, isProcessing }) => {
+const FileUpload = ({ onProcess, isProcessing, onError }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  const validateAndSetFile = (file) => {
+    if (onError) onError(null); // Clear previous errors
+    
+    if (file.size === 0) {
+      if (onError) onError("The selected file is empty.");
+      return;
+    }
+    
+    if (file.size > 25 * 1024 * 1024) {
+      if (onError) onError("File is too large. Maximum allowed size is 25MB.");
+      return;
+    }
+
+    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    if (!['.mp3', '.wav', '.m4a'].includes(ext)) {
+      if (onError) onError("Invalid file type. Only MP3, WAV, and M4A audio files are allowed.");
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
+      validateAndSetFile(e.target.files[0]);
     }
   };
 
@@ -14,10 +36,13 @@ const FileUpload = ({ onProcess, isProcessing }) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) setSelectedFile(file);
+    if (file) validateAndSetFile(file);
   };
 
-  const handleClear = () => setSelectedFile(null);
+  const handleClear = () => {
+    setSelectedFile(null);
+    if (onError) onError(null);
+  };
 
   const handleSubmit = () => {
     if (selectedFile) onProcess(selectedFile, selectedFile.name);
@@ -64,7 +89,7 @@ const FileUpload = ({ onProcess, isProcessing }) => {
         <p className="text-sm font-medium text-slate-400">
           {isDragging ? 'Drop your file here' : 'Click or drag & drop an audio file'}
         </p>
-        <p className="text-xs text-slate-600 mt-1">MP3, WAV, FLAC, M4A — up to 500 MB</p>
+        <p className="text-xs text-slate-600 mt-1">MP3, WAV, M4A — up to 25 MB</p>
       </div>
 
       {/* Selected File Preview */}
