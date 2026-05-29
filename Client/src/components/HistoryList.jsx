@@ -1,83 +1,85 @@
 function HistoryList({ items }) {
-  const truncate = (text, max = 120) => {
+  const truncate = (text, max = 100) => {
     if (!text) return ''
     return text.length > max ? text.slice(0, max) + '...' : text
   }
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
-      {/* Top gradient accent */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
-
-      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <section className="mt-12 animate-slideUp">
+      <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="flex items-center gap-2.5">
-            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
-              History
-            </p>
-            {items.length > 0 && (
-              <span className="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-bold text-indigo-700">
-                {items.length}
-              </span>
-            )}
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200 inset-ring">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+              Transcription History
+            </h2>
           </div>
-          <h2 className="mt-2 text-2xl font-bold text-slate-900">
-            Recent transcriptions
-          </h2>
+          <p className="mt-2 text-base text-slate-500 ml-13">Your previously processed audio files.</p>
         </div>
-        <p className="text-sm text-slate-400">Uploaded files from this session</p>
       </div>
 
       {items.length > 0 ? (
-        <div className="space-y-3">
-          {items.map((item) => (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item, index) => (
             <article
               key={item.id}
-              className="group/card rounded-xl border border-slate-200/60 bg-gradient-to-r from-white to-slate-50/50 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200/60 hover:shadow-lg hover:shadow-indigo-500/5"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-200"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
-                  {/* Audio waveform icon */}
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500 transition-colors group-hover/card:bg-indigo-100 group-hover/card:text-indigo-600">
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M2 10v4" />
-                      <path d="M6 6v12" />
-                      <path d="M10 3v18" />
-                      <path d="M14 8v8" />
-                      <path d="M18 5v14" />
-                      <path d="M22 10v4" />
-                    </svg>
+              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              
+              <div>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4 overflow-hidden">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-all duration-300 group-hover:scale-110 group-hover:bg-indigo-50 group-hover:text-indigo-600 ring-1 ring-slate-200 group-hover:ring-indigo-100 inset-ring">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 10v4" />
+                        <path d="M6 6v12" />
+                        <path d="M10 3v18" />
+                        <path d="M14 8v8" />
+                        <path d="M18 5v14" />
+                        <path d="M22 10v4" />
+                      </svg>
+                    </div>
+                    <h3 className="truncate text-lg font-bold text-slate-800 transition-colors group-hover:text-indigo-700">
+                      {item.fileName}
+                    </h3>
                   </div>
-                  <h3 className="font-semibold text-slate-800 transition-colors group-hover/card:text-indigo-700">
-                    {item.fileName}
-                  </h3>
                 </div>
-                <span className="shrink-0 text-xs font-medium text-slate-400">
+                
+                <p className="mt-5 text-sm leading-relaxed text-slate-600 line-clamp-3 font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+                  {truncate(item.preview, 120)}
+                </p>
+              </div>
+              
+              <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+                <span className="text-xs font-semibold text-slate-400">
                   {item.createdAt}
                 </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-600/20 inset-ring">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                  Completed
+                </span>
               </div>
-              <p className="mt-2 text-sm text-slate-600">{item.preview}</p>
-              <span className="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                {item.status}
-              </span>
             </article>
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-4 py-12 text-center">
-          {/* Empty state icon */}
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-300">
-            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-white/50 backdrop-blur-sm px-4 py-20 text-center transition-all duration-300 hover:border-indigo-300 hover:bg-indigo-50/30">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-400 shadow-inner">
+            <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18V5l12-2v13" />
               <circle cx="6" cy="18" r="3" />
               <circle cx="18" cy="16" r="3" />
             </svg>
           </div>
-          <p className="text-sm font-medium text-slate-500">
-            No transcriptions yet
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Your latest audio files will appear here during this session.
+          <h3 className="text-xl font-bold text-slate-800">No history yet</h3>
+          <p className="mt-2 text-base text-slate-500">
+            Transcribe an audio file and it will show up here as a beautiful card.
           </p>
         </div>
       )}
