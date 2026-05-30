@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
+
 function HistoryList({ items }) {
-  const truncate = (text, max = 100) => {
+  const truncate = (text, max = 120) => {
     if (!text) return '';
     return text.length > max ? text.slice(0, max) + '…' : text;
   };
@@ -10,9 +12,12 @@ function HistoryList({ items }) {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-bold text-white">Recent Transcriptions</h2>
         {items.length > 0 && (
-          <button className="text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors duration-200">
+          <Link
+            to="/history"
+            className="text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors duration-200"
+          >
             View All History →
-          </button>
+          </Link>
         )}
       </div>
 
@@ -25,23 +30,16 @@ function HistoryList({ items }) {
               style={{ animationDelay: `${index * 80}ms` }}
             >
               {/* Card Header */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="h-9 w-9 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center shrink-0">
-                    <svg className="h-4 w-4 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 10v4" />
-                    </svg>
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="text-sm font-semibold text-white truncate">{item.fileName}</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{item.createdAt}</p>
-                  </div>
-                </div>
-                <button className="text-slate-600 hover:text-slate-400 transition-colors shrink-0">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01" />
+              <div className="flex items-start gap-3">
+                <div className="h-9 w-9 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center shrink-0">
+                  <svg className="h-4 w-4 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 10v4" />
                   </svg>
-                </button>
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-semibold text-white truncate">{item.fileName}</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">{item.createdAt}</p>
+                </div>
               </div>
 
               {/* Transcript Preview */}
@@ -49,16 +47,11 @@ function HistoryList({ items }) {
                 {truncate(item.preview, 120)}
               </p>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-1 border-t border-white/[0.05]">
-                <button className="text-xs font-semibold text-slate-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/[0.08] transition-all duration-200">
-                  View
-                </button>
-                <button className="h-7 w-7 flex items-center justify-center rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16" />
-                  </svg>
-                </button>
+              {/* Footer — status badge only */}
+              <div className="flex items-center pt-1 border-t border-white/[0.05]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                  {item.status}
+                </span>
               </div>
             </article>
           ))}

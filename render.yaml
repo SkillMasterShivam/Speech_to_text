@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: speechflow-api
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: cd Server && npm install
+    startCommand: cd Server && node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 30d
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false

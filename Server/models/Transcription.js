@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const transcriptionSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   originalFileName: {
     type: String,
     required: true,
@@ -13,7 +18,7 @@ const transcriptionSchema = new mongoose.Schema({
   },
   audioFilePath: {
     type: String,
-    required: true,
+    default: null,
   },
   mimeType: {
     type: String,
@@ -33,6 +38,9 @@ const transcriptionSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+/* ── Compound index for the primary query pattern ── */
+transcriptionSchema.index({ userId: 1, createdAt: -1 });
 
 const Transcription = mongoose.model("Transcription", transcriptionSchema);
 
